@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - VAPTIC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00ff88;
+            --secondary-color: #00d4ff;
+            --dark-bg: #0a0e27;
+            --card-bg: #151932;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --gradient: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--card-bg);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            color: var(--text-secondary);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Welcome Section */
+        .welcome {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .welcome h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome p {
+            color: var(--text-secondary);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: #ffc107;
+        }
+
+        .status-approved {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: var(--primary-color);
+        }
+
+        .status-rejected {
+            background: rgba(255, 0, 102, 0.1);
+            border: 1px solid rgba(255, 0, 102, 0.3);
+            color: #ff0066;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        /* Course Grid */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .course-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            transition: all 0.3s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .course-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            background: rgba(0, 255, 136, 0.1);
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            background: var(--gradient);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .btn-view {
+            display: inline-block;
+            background: var(--gradient);
+            color: var(--dark-bg);
+            padding: 0.7rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: var(--secondary-color);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .info-box h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Loading */
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 255, 136, 0.1);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">VAPTIC</div>
+        <div class="user-info">
+            <span class="user-name" id="userName">Loading...</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome">
+            <h1>Welcome back, <span id="welcomeName">Student</span>!</h1>
+            <p>Track your learning progress and access your enrolled courses</p>
+            <div id="statusBadge"></div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingContainer" class="loading-container">
+            <div class="loading"></div>
+        </div>
+
+        <!-- Main Content (hidden initially) -->
+        <div id="mainContent" style="display: none;">
+            <!-- Account Status Info -->
+            <div id="statusInfo"></div>
+
+            <!-- My Courses Section -->
+            <div class="section">
+                <h2>My Courses</h2>
+                <div id="coursesContainer" class="course-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ========================================
+        // PASTE YOUR FIREBASE CONFIG HERE
+        // ========================================
+       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+		const firebaseConfig = {
+		apiKey: "AIzaSyDzkTLW2pIzTDy-F2d3fvIjMsWw_91QAA0",
+		authDomain: "vaptic--lms.firebaseapp.com",
+		projectId: "vaptic--lms",
+		storageBucket: "vaptic--lms.firebasestorage.app",
+		messagingSenderId: "28348726528",
+		appId: "1:28348726528:web:ed72a944ce017d5c41c7e5",
+		measurementId: "G-9HY0DKHM6M"
+		};
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
+        let userData = null;
+
+        // Check authentication and load dashboard
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                // Not logged in, redirect to login
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = user;
+            await loadDashboard(user);
+        });
+
+        // Load dashboard data
+        async function loadDashboard(user) {
+            try {
+                // Get user data from Firestore
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                
+                if (!userDoc.exists) {
+                    console.error('User document not found');
+                    showError('Account data not found. Please contact support.');
+                    return;
+                }
+
+                userData = userDoc.data();
+
+                // Update UI with user info
+                document.getElementById('userName').textContent = userData.fullName || 'Student';
+                document.getElementById('welcomeName').textContent = userData.fullName.split(' ')[0] || 'Student';
+
+                // Show status badge
+                showStatusBadge(userData.status);
+
+                // Show status-specific information
+                showStatusInfo(userData.status);
+
+                // Load enrolled courses
+                await loadEnrolledCourses(userData);
+
+                // Hide loading, show content
+                document.getElementById('loadingContainer').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                showError('Failed to load dashboard. Please refresh the page.');
+            }
+        }
+
+        // Show status badge
+        function showStatusBadge(status) {
+            const badgeContainer = document.getElementById('statusBadge');
+            let badgeClass = '';
+            let badgeText = '';
+
+            switch (status) {
+                case 'pending':
+                    badgeClass = 'status-pending';
+                    badgeText = '⏳ Account Pending Approval';
+                    break;
+                case 'approved':
+                    badgeClass = 'status-approved';
+                    badgeText = '✓ Account Approved';
+                    break;
+                case 'rejected':
+                    badgeClass = 'status-rejected';
+                    badgeText = '✗ Account Not Approved';
+                    break;
+            }
+
+            badgeContainer.innerHTML = `<span class="status-badge ${badgeClass}">${badgeText}</span>`;
+        }
+
+        // Show status-specific information
+        function showStatusInfo(status) {
+            const statusInfoContainer = document.getElementById('statusInfo');
+
+            if (status === 'pending') {
+                statusInfoContainer.innerHTML = `
+                    <div class="info-box">
+                        <h3>⏳ Account Under Review</h3>
+                        <p>Your account is currently being reviewed by our admin team. You will receive an email notification once your account is approved. Thank you for your patience!</p>
+                    </div>
+                `;
+            } else if (status === 'rejected') {
+                statusInfoContainer.innerHTML = `
+                    <div class="info-box" style="background: rgba(255, 0, 102, 0.1); border-color: rgba(255, 0, 102, 0.3); color: #ff0066;">
+                        <h3>Application Not Approved</h3>
+                        <p>Unfortunately, your application was not approved. Please contact support at contact@vaptic.com for more information.</p>
+                    </div>
+                `;
+            } else {
+                statusInfoContainer.innerHTML = '';
+            }
+        }
+
+        // Load enrolled courses
+        async function loadEnrolledCourses(userData) {
+            const coursesContainer = document.getElementById('coursesContainer');
+
+            // Check if user has any enrolled courses
+            if (!userData.enrolledCourses || userData.enrolledCourses.length === 0) {
+                coursesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <h3>No Enrolled Courses</h3>
+                        <p>${userData.status === 'approved' ? 
+                            'You haven\'t enrolled in any courses yet. Contact us to enroll!' : 
+                            'Once your account is approved, you can enroll in courses.'
+                        }</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Load course details and enrollments
+            const coursePromises = userData.enrolledCourses.map(async (courseId) => {
+                try {
+                    const courseDoc = await db.collection('courses').doc(courseId).get();
+                    if (!courseDoc.exists) return null;
+
+                    const courseData = courseDoc.data();
+
+                    // Get enrollment data to check progress
+                    const enrollmentQuery = await db.collection('enrollments')
+                        .where('userId', '==', currentUser.uid)
+                        .where('courseId', '==', courseId)
+                        .limit(1)
+                        .get();
+
+                    let progress = 0;
+                    let enrollmentId = null;
+
+                    if (!enrollmentQuery.empty) {
+                        const enrollmentData = enrollmentQuery.docs[0].data();
+                        enrollmentId = enrollmentQuery.docs[0].id;
+                        progress = enrollmentData.progress || 0;
+                    }
+
+                    return {
+                        id: courseId,
+                        enrollmentId: enrollmentId,
+                        ...courseData,
+                        progress: progress
+                    };
+                } catch (error) {
+                    console.error(`Error loading course ${courseId}:`, error);
+                    return null;
+                }
+            });
+
+            const courses = (await Promise.all(coursePromises)).filter(c => c !== null);
+
+            if (courses.length === 0) {
+                coursesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <h3>No Courses Available</h3>
+                        <p>Unable to load course information. Please try again later.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Display courses
+            coursesContainer.innerHTML = courses.map(course => `
+                <div class="course-card">
+                    <h3>${course.name}</h3>
+                    <p>${course.description}</p>
+                    <p><strong>Duration:</strong> ${course.duration}</p>
+                    <p><strong>Total Modules:</strong> ${course.totalModules}</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${course.progress}%"></div>
+                    </div>
+                    <p class="progress-text">${course.progress}% Complete</p>
+                    <a href="course-viewer.html?id=${course.id}" class="btn-view">View Course</a>
+                </div>
+            `).join('');
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                await auth.signOut();
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Failed to logout. Please try again.');
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            document.getElementById('loadingContainer').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚠️</div>
+                    <h3>Error</h3>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
