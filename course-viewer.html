@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Viewer - VAPTIC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00ff88;
+            --secondary-color: #00d4ff;
+            --dark-bg: #0a0e27;
+            --card-bg: #151932;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --gradient: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            --locked-color: #4a5568;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--card-bg);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-links a, .nav-links button {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .nav-links a:hover, .nav-links button:hover {
+            color: var(--primary-color);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Course Header */
+        .course-header {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .course-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .meta-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            background: rgba(0, 255, 136, 0.1);
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: var(--gradient);
+            height: 100%;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Module List */
+        .modules-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .module-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .module-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .module-card:hover {
+            border-color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .module-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .module-card.locked:hover {
+            transform: none;
+            border-color: rgba(0, 255, 136, 0.1);
+        }
+
+        .module-card.completed {
+            border-color: var(--primary-color);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .module-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .module-number.unlocked {
+            background: var(--gradient);
+            color: var(--dark-bg);
+        }
+
+        .module-number.locked {
+            background: rgba(74, 85, 104, 0.3);
+            color: var(--locked-color);
+        }
+
+        .module-number.completed {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+        }
+
+        .module-info {
+            flex: 1;
+        }
+
+        .module-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .module-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .module-meta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .module-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-unlocked {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .status-locked {
+            background: rgba(74, 85, 104, 0.1);
+            border: 1px solid var(--locked-color);
+            color: var(--locked-color);
+        }
+
+        .status-completed {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* Loading */
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+
+        .loading {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 255, 136, 0.1);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: var(--secondary-color);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .module-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .module-status {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo" onclick="window.location.href='dashboard.html'">VAPTIC</div>
+        <div class="nav-links">
+            <a href="dashboard.html">← Back to Dashboard</a>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Loading State -->
+        <div id="loadingContainer" class="loading-container">
+            <div class="loading"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" style="display: none;">
+            <!-- Course Header -->
+            <div class="course-header">
+                <h1 id="courseName">Loading...</h1>
+                <p id="courseDescription" style="color: var(--text-secondary); margin-top: 0.5rem;"></p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <span class="meta-icon">📚</span>
+                        <span id="totalModules">0 Modules</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon">⏱️</span>
+                        <span id="courseDuration">Duration</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon">📊</span>
+                        <span id="courseLevel">Level</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="progress-section">
+                <div class="progress-header">
+                    <h3>Your Progress</h3>
+                    <span id="progressPercentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <div class="progress-stats">
+                    <span id="completedModules">0 completed</span>
+                    <span>•</span>
+                    <span id="unlockedModules">0 unlocked</span>
+                    <span>•</span>
+                    <span id="lockedModules">0 locked</span>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div id="infoBox" class="info-box" style="display: none;"></div>
+
+            <!-- Modules Section -->
+            <div class="modules-section">
+                <h2>Course Modules</h2>
+                <div id="moduleList" class="module-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ========================================
+        // PASTE YOUR FIREBASE CONFIG HERE
+        // ========================================
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+		const firebaseConfig = {
+		apiKey: "AIzaSyDzkTLW2pIzTDy-F2d3fvIjMsWw_91QAA0",
+		authDomain: "vaptic--lms.firebaseapp.com",
+		projectId: "vaptic--lms",
+		storageBucket: "vaptic--lms.firebasestorage.app",
+		messagingSenderId: "28348726528",
+		appId: "1:28348726528:web:ed72a944ce017d5c41c7e5",
+		measurementId: "G-9HY0DKHM6M"
+		};
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
+        let courseId = null;
+        let enrollmentData = null;
+        let courseData = null;
+        let modules = [];
+
+        // Get course ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        courseId = urlParams.get('id');
+
+        if (!courseId) {
+            alert('No course specified');
+            window.location.href = 'dashboard.html';
+        }
+
+        // Check authentication and load course
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = user;
+            await loadCourse();
+        });
+
+        // Load course data
+        async function loadCourse() {
+            try {
+                // Get course data
+                const courseDoc = await db.collection('courses').doc(courseId).get();
+                if (!courseDoc.exists) {
+                    showError('Course not found');
+                    return;
+                }
+                courseData = courseDoc.data();
+
+                // Get enrollment data
+                const enrollmentQuery = await db.collection('enrollments')
+                    .where('userId', '==', currentUser.uid)
+                    .where('courseId', '==', courseId)
+                    .limit(1)
+                    .get();
+
+                if (enrollmentQuery.empty) {
+                    showInfo('You are not enrolled in this course yet. Please contact admin to enroll.');
+                    displayCourseHeader();
+                    document.getElementById('loadingContainer').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
+                    return;
+                }
+
+                enrollmentData = enrollmentQuery.docs[0].data();
+                enrollmentData.id = enrollmentQuery.docs[0].id;
+
+                // Get modules
+                const modulesSnapshot = await db.collection('courses').doc(courseId)
+                    .collection('modules')
+                    .orderBy('order', 'asc')
+                    .get();
+
+                modules = modulesSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                // Display everything
+                displayCourseHeader();
+                displayProgress();
+                displayModules();
+
+                document.getElementById('loadingContainer').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error loading course:', error);
+                showError('Failed to load course. Please try again.');
+            }
+        }
+
+        // Display course header
+        function displayCourseHeader() {
+            document.getElementById('courseName').textContent = courseData.name;
+            document.getElementById('courseDescription').textContent = courseData.description || '';
+            document.getElementById('totalModules').textContent = `${courseData.totalModules || modules.length} Modules`;
+            document.getElementById('courseDuration').textContent = courseData.duration || 'N/A';
+            document.getElementById('courseLevel').textContent = courseData.level || 'All Levels';
+        }
+
+        // Display progress
+        function displayProgress() {
+            if (!enrollmentData) {
+                document.querySelector('.progress-section').style.display = 'none';
+                return;
+            }
+
+            const unlockedModules = enrollmentData.unlockedModules || [1];
+            const completedModules = enrollmentData.completedModules || [];
+            const totalModules = courseData.totalModules || modules.length;
+
+            const progress = Math.round((completedModules.length / totalModules) * 100);
+            const lockedCount = totalModules - unlockedModules.length;
+
+            document.getElementById('progressPercentage').textContent = `${progress}%`;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('completedModules').textContent = `${completedModules.length} completed`;
+            document.getElementById('unlockedModules').textContent = `${unlockedModules.length} unlocked`;
+            document.getElementById('lockedModules').textContent = `${lockedCount} locked`;
+        }
+
+        // Display modules
+        function displayModules() {
+            const moduleList = document.getElementById('moduleList');
+
+            if (modules.length === 0) {
+                moduleList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <h3>No Modules Available</h3>
+                        <p>Course modules will appear here once they are added.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const unlockedModules = enrollmentData ? (enrollmentData.unlockedModules || [1]) : [];
+            const completedModules = enrollmentData ? (enrollmentData.completedModules || []) : [];
+
+            moduleList.innerHTML = modules.map(module => {
+                const moduleNumber = module.order || 0;
+                const isUnlocked = unlockedModules.includes(moduleNumber);
+                const isCompleted = completedModules.includes(moduleNumber);
+
+                let statusClass = 'locked';
+                let statusText = 'Locked';
+                let statusIcon = '🔒';
+
+                if (isCompleted) {
+                    statusClass = 'completed';
+                    statusText = 'Completed';
+                    statusIcon = '✓';
+                } else if (isUnlocked) {
+                    statusClass = 'unlocked';
+                    statusText = 'Unlocked';
+                    statusIcon = '🔓';
+                }
+
+                const clickHandler = isUnlocked ? 
+                    `onclick="openModule('${module.id}', ${moduleNumber})"` : 
+                    `onclick="showLockedMessage()"`;
+
+                return `
+                    <div class="module-card ${statusClass}" ${clickHandler}>
+                        <div class="module-number ${statusClass}">
+                            ${isCompleted ? '✓' : moduleNumber}
+                        </div>
+                        <div class="module-info">
+                            <h3>${module.title || 'Module ' + moduleNumber}</h3>
+                            <p>${module.description || 'No description available'}</p>
+                            <div class="module-meta">
+                                ${module.duration ? `<span>⏱️ ${module.duration}</span>` : ''}
+                                ${module.resources ? `<span>📁 ${Object.keys(module.resources).length} resources</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="module-status">
+                            <span class="status-badge status-${statusClass}">
+                                ${statusIcon} ${statusText}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Open module
+        function openModule(moduleId, moduleNumber) {
+            window.location.href = `module-viewer.html?courseId=${courseId}&moduleId=${moduleId}&moduleNumber=${moduleNumber}`;
+        }
+
+        // Show locked message
+        function showLockedMessage() {
+            showInfo('🔒 This module is locked. Complete previous modules or wait for your instructor to unlock it.');
+        }
+
+        // Show info message
+        function showInfo(message) {
+            const infoBox = document.getElementById('infoBox');
+            infoBox.textContent = message;
+            infoBox.style.display = 'block';
+            setTimeout(() => {
+                infoBox.style.display = 'none';
+            }, 5000);
+        }
+
+        // Show error
+        function showError(message) {
+            document.getElementById('loadingContainer').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚠️</div>
+                    <h3>Error</h3>
+                    <p>${message}</p>
+                    <button onclick="window.location.href='dashboard.html'" 
+                            style="margin-top: 1rem; padding: 0.8rem 1.5rem; background: var(--gradient); 
+                            border: none; border-radius: 5px; color: var(--dark-bg); font-weight: bold; cursor: pointer;">
+                        Back to Dashboard
+                    </button>
+                </div>
+            `;
+        }
+
+        // Logout
+        async function logout() {
+            try {
+                await auth.signOut();
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Failed to logout');
+            }
+        }
+    </script>
+</body>
+</html>
