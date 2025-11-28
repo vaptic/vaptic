@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - VAPTIC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00ff88;
+            --secondary-color: #00d4ff;
+            --dark-bg: #0a0e27;
+            --card-bg: #151932;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --gradient: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            --danger: #ff0066;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--card-bg);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .admin-badge {
+            background: var(--danger);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-links button {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-links button:hover {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: var(--primary-color);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .table-header h2 {
+            color: var(--primary-color);
+        }
+
+        .search-box {
+            padding: 0.8rem;
+            background: var(--dark-bg);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 5px;
+            color: var(--text-primary);
+            width: 300px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.05);
+        }
+
+        th {
+            background: rgba(0, 255, 136, 0.05);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        td {
+            color: var(--text-secondary);
+        }
+
+        tr:hover {
+            background: rgba(0, 255, 136, 0.02);
+        }
+
+        /* Badges */
+        .badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .badge-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .badge-approved {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .badge-rejected {
+            background: rgba(255, 0, 102, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        /* Action Buttons */
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            margin: 0 0.25rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: var(--dark-bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 102, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--text-secondary);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--dark-bg);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 5px;
+            color: var(--text-primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* Message */
+        .message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .message-success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .message-error {
+            background: rgba(255, 0, 102, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div>
+            <span class="logo">VAPTIC</span>
+            <span class="admin-badge">ADMIN</span>
+        </div>
+        <div class="nav-links">
+            <button onclick="window.location.href='dashboard.html'">Student View</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="messageArea"></div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="statPending">0</h3>
+                <p>Pending Approvals</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="statApproved">0</h3>
+                <p>Approved Students</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="statEnrolled">0</h3>
+                <p>Total Enrollments</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="statCourses">2</h3>
+                <p>Active Courses</p>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('students')">Students</button>
+            <button class="tab" onclick="switchTab('enrollments')">Enrollments</button>
+        </div>
+
+        <div id="studentsTab" class="tab-content active">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>Student Management</h2>
+                    <input type="text" class="search-box" id="studentSearch" placeholder="Search students...">
+                </div>
+                <div id="studentsTable"></div>
+            </div>
+        </div>
+
+        <div id="enrollmentsTab" class="tab-content">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>Enrollment Management</h2>
+                    <button class="btn btn-primary" onclick="openEnrollModal()">+ Enroll Student</button>
+                </div>
+                <div id="enrollmentsTable"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="enrollModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Enroll Student</h2>
+            </div>
+            <form id="enrollForm">
+                <div class="form-group">
+                    <label>Student</label>
+                    <select id="enrollStudent" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Course</label>
+                    <select id="enrollCourse" required>
+                        <option value="foundation">Foundation VAPTIC</option>
+                        <option value="advanced">Advanced VAPTIC</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Batch Number</label>
+                    <input type="number" id="enrollBatch" value="1" min="1" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEnrollModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Enroll</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // PASTE YOUR FIREBASE CONFIG HERE
+		// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+		const firebaseConfig = {
+		apiKey: "AIzaSyDzkTLW2pIzTDy-F2d3fvIjMsWw_91QAA0",
+		authDomain: "vaptic--lms.firebaseapp.com",
+		projectId: "vaptic--lms",
+		storageBucket: "vaptic--lms.firebasestorage.app",
+		messagingSenderId: "28348726528",
+		appId: "1:28348726528:web:ed72a944ce017d5c41c7e5",
+		measurementId: "G-9HY0DKHM6M"
+		};
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
+        let allStudents = [];
+        let allEnrollments = [];
+
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = user;
+            
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (userDoc.exists && userDoc.data().role === 'admin') {
+                loadDashboard();
+            } else {
+                alert('Access denied. Admin only.');
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        async function loadDashboard() {
+            await Promise.all([
+                loadStudents(),
+                loadEnrollments(),
+                updateStats()
+            ]);
+        }
+
+        async function loadStudents() {
+            try {
+                const snapshot = await db.collection('users')
+                    .where('role', '==', 'student')
+                    .get();
+
+                allStudents = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                displayStudents(allStudents);
+            } catch (error) {
+                console.error('Error loading students:', error);
+                showMessage('Failed to load students', 'error');
+            }
+        }
+
+        function displayStudents(students) {
+            const container = document.getElementById('studentsTable');
+
+            if (students.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👥</div><p>No students found</p></div>';
+                return;
+            }
+
+            const html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Course Interest</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${students.map(student => `
+                            <tr>
+                                <td>${student.fullName || 'N/A'}</td>
+                                <td>${student.email}</td>
+                                <td>${student.courseInterest || 'N/A'}</td>
+                                <td><span class="badge badge-${student.status}">${student.status}</span></td>
+                                <td>
+                                    ${student.status === 'pending' ? `
+                                        <button class="btn btn-primary" onclick="approveStudent('${student.id}')">Approve</button>
+                                        <button class="btn btn-danger" onclick="rejectStudent('${student.id}')">Reject</button>
+                                    ` : student.status === 'approved' ? `
+                                        <button class="btn btn-secondary">Approved</button>
+                                    ` : `
+                                        <button class="btn btn-secondary" onclick="approveStudent('${student.id}')">Re-approve</button>
+                                    `}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        async function approveStudent(userId) {
+            if (!confirm('Approve this student?')) return;
+
+            try {
+                await db.collection('users').doc(userId).update({
+                    status: 'approved'
+                });
+
+                showMessage('Student approved successfully!', 'success');
+                await loadStudents();
+                await updateStats();
+            } catch (error) {
+                console.error('Error approving student:', error);
+                showMessage('Failed to approve student', 'error');
+            }
+        }
+
+        async function rejectStudent(userId) {
+            if (!confirm('Reject this student?')) return;
+
+            try {
+                await db.collection('users').doc(userId).update({
+                    status: 'rejected'
+                });
+
+                showMessage('Student rejected', 'success');
+                await loadStudents();
+                await updateStats();
+            } catch (error) {
+                console.error('Error rejecting student:', error);
+                showMessage('Failed to reject student', 'error');
+            }
+        }
+
+        async function loadEnrollments() {
+            try {
+                const snapshot = await db.collection('enrollments').get();
+
+                allEnrollments = await Promise.all(snapshot.docs.map(async doc => {
+                    const enrollment = { id: doc.id, ...doc.data() };
+                    
+                    const userDoc = await db.collection('users').doc(enrollment.userId).get();
+                    enrollment.studentName = userDoc.exists ? userDoc.data().fullName : 'Unknown';
+
+                    return enrollment;
+                }));
+
+                displayEnrollments(allEnrollments);
+            } catch (error) {
+                console.error('Error loading enrollments:', error);
+                showMessage('Failed to load enrollments', 'error');
+            }
+        }
+
+        function displayEnrollments(enrollments) {
+            const container = document.getElementById('enrollmentsTable');
+
+            if (enrollments.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📚</div><p>No enrollments found</p></div>';
+                return;
+            }
+
+            const html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Course</th>
+                            <th>Batch</th>
+                            <th>Progress</th>
+                            <th>Unlocked</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${enrollments.map(enrollment => `
+                            <tr>
+                                <td>${enrollment.studentName}</td>
+                                <td>${enrollment.courseId}</td>
+                                <td>Batch ${enrollment.batchNumber}</td>
+                                <td>${enrollment.progress || 0}%</td>
+                                <td>${(enrollment.unlockedModules || []).length} modules</td>
+                                <td>
+                                    <button class="btn btn-primary" onclick="unlockNextModule('${enrollment.id}')">Unlock Next</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        async function unlockNextModule(enrollmentId) {
+            try {
+                const enrollmentDoc = await db.collection('enrollments').doc(enrollmentId).get();
+                const enrollment = enrollmentDoc.data();
+                const unlockedModules = enrollment.unlockedModules || [];
+                const nextModule = Math.max(...unlockedModules) + 1;
+
+                if (nextModule > 20) {
+                    showMessage('All modules already unlocked!', 'error');
+                    return;
+                }
+
+                await db.collection('enrollments').doc(enrollmentId).update({
+                    unlockedModules: [...unlockedModules, nextModule]
+                });
+
+                showMessage(`Module ${nextModule} unlocked!`, 'success');
+                await loadEnrollments();
+            } catch (error) {
+                console.error('Error unlocking module:', error);
+                showMessage('Failed to unlock module', 'error');
+            }
+        }
+
+        async function openEnrollModal() {
+            const modal = document.getElementById('enrollModal');
+            const studentSelect = document.getElementById('enrollStudent');
+
+            const approvedStudents = allStudents.filter(s => s.status === 'approved');
+            studentSelect.innerHTML = approvedStudents.map(s => 
+                `<option value="${s.id}">${s.fullName} (${s.email})</option>`
+            ).join('');
+
+            modal.classList.add('active');
+        }
+
+        function closeEnrollModal() {
+            document.getElementById('enrollModal').classList.remove('active');
+        }
+
+        document.getElementById('enrollForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const userId = document.getElementById('enrollStudent').value;
+            const courseId = document.getElementById('enrollCourse').value;
+            const batchNumber = parseInt(document.getElementById('enrollBatch').value);
+
+            try {
+                await db.collection('enrollments').add({
+                    userId: userId,
+                    courseId: courseId,
+                    batchNumber: batchNumber,
+                    enrolledDate: firebase.firestore.FieldValue.serverTimestamp(),
+                    paymentStatus: 'paid',
+                    unlockedModules: [1],
+                    completedModules: [],
+                    progress: 0
+                });
+
+                const userDoc = await db.collection('users').doc(userId).get();
+                const enrolledCourses = userDoc.data().enrolledCourses || [];
+                if (!enrolledCourses.includes(courseId)) {
+                    await db.collection('users').doc(userId).update({
+                        enrolledCourses: [...enrolledCourses, courseId]
+                    });
+                }
+
+                showMessage('Student enrolled successfully!', 'success');
+                closeEnrollModal();
+                await loadEnrollments();
+                await updateStats();
+            } catch (error) {
+                console.error('Error enrolling student:', error);
+                showMessage('Failed to enroll student', 'error');
+            }
+        });
+
+        async function updateStats() {
+            const pending = allStudents.filter(s => s.status === 'pending').length;
+            const approved = allStudents.filter(s => s.status === 'approved').length;
+            const enrolled = allEnrollments.length;
+
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statApproved').textContent = approved;
+            document.getElementById('statEnrolled').textContent = enrolled;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        function showMessage(text, type) {
+            const messageArea = document.getElementById('messageArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${type}`;
+            messageDiv.textContent = text;
+            messageArea.appendChild(messageDiv);
+
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+
+        async function logout() {
+            try {
+                await auth.signOut();
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        document.getElementById('studentSearch').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = allStudents.filter(s => 
+                s.fullName?.toLowerCase().includes(query) ||
+                s.email?.toLowerCase().includes(query)
+            );
+            displayStudents(filtered);
+        });
+    </script>
+</body>
+</html>
