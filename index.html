@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAPTIC - Vulnerability Assessment & Penetration Testing Courses</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00ff88;
+            --secondary-color: #00d4ff;
+            --dark-bg: #0a0e27;
+            --card-bg: #151932;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --gradient: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(21, 25, 50, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-subtitle {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-top: -5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: var(--dark-bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 6rem 5%;
+            text-align: center;
+            background: radial-gradient(circle at 50% 0%, rgba(0, 255, 136, 0.1) 0%, transparent 50%);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 5rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+        }
+
+        /* Who Is This For Section */
+        .target-audience {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05) 0%, rgba(0, 212, 255, 0.05) 100%);
+            border-radius: 20px;
+            padding: 4rem 3rem;
+            margin: 4rem 0;
+        }
+
+        .audience-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .audience-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid var(--primary-color);
+            text-align: center;
+        }
+
+        .audience-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .audience-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .audience-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Course Outcomes */
+        .outcomes {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 4rem 3rem;
+            margin: 4rem 0;
+            border: 2px solid var(--primary-color);
+        }
+
+        .outcomes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .outcome-item {
+            display: flex;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .outcome-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .outcome-content h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .outcome-content p {
+            color: var(--text-secondary);
+        }
+
+        /* Courses */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .course-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            transition: all 0.3s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.2);
+        }
+
+        .course-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .course-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .course-header h3 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .course-body {
+            padding: 2rem;
+        }
+
+        .course-features {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .course-features li {
+            padding: 0.7rem 0;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.05);
+        }
+
+        .course-features li:before {
+            content: "✓";
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* Syllabus */
+        .syllabus {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.02) 0%, rgba(0, 212, 255, 0.02) 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem 0;
+            border: 2px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .syllabus-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .syllabus-header h3 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .syllabus-tabs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: var(--card-bg);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            color: var(--text-secondary);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--gradient);
+            color: var(--dark-bg);
+            border-color: transparent;
+        }
+
+        .syllabus-content {
+            display: none;
+        }
+
+        .syllabus-content.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .module-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            transition: all 0.3s;
+        }
+
+        .module-card:hover {
+            border-color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .module-number {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-card h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .module-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: var(--gradient);
+            border-radius: 20px;
+            padding: 4rem 3rem;
+            text-align: center;
+            margin: 5rem 0;
+        }
+
+        .cta h2 {
+            color: var(--dark-bg);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta p {
+            color: rgba(10, 14, 39, 0.8);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta .btn {
+            background: var(--dark-bg);
+            color: var(--primary-color);
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+        }
+
+        .cta .btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--card-bg);
+            padding: 3rem 5%;
+            border-top: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 3rem 5%;
+            }
+
+            .syllabus-content.active {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div>
+                <div class="logo">VAPTIC</div>
+                <span class="logo-subtitle">Vulnerability Assessment Penetration Testing Integrated Courses</span>
+            </div>
+            <div class="nav-links">
+                <a href="#courses">Courses</a>
+                <a href="#syllabus">Syllabus</a>
+                <a href="login.html" class="btn btn-outline">Student Login</a>
+                <a href="signup.html" class="btn btn-primary">Enroll Now</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <p class="hero-subtitle">Master the Art of Ethical Hacking & Cybersecurity</p>
+        <h1>Become a Certified Penetration Tester</h1>
+        <p>Premier cybersecurity training for UK students. Transform into a certified penetration tester in just 2 months with hands-on training from industry experts.</p>
+        <a href="signup.html" class="btn btn-primary" style="padding: 1rem 3rem; font-size: 1.1rem;">Start Your Journey</a>
+    </section>
+
+    <!-- Stats -->
+    <section>
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">20</div>
+                <div class="stat-label">Modules Per Course</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Months Duration</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">10</div>
+                <div class="stat-label">Students Per Batch</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Practical Focus</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section>
+        <div class="section-header">
+            <h2>Why Choose VAPTIC?</h2>
+            <p>Industry-leading cybersecurity training designed for success</p>
+        </div>
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Real-World Scenarios</h3>
+                <p>Practice with live lab environments and actual penetration testing scenarios used by professionals.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛠️</div>
+                <h3>Professional Tools</h3>
+                <p>Master Metasploit, Burp Suite, Nmap, Wireshark, and other industry-standard utilities.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Comprehensive Materials</h3>
+                <p>Access video tutorials, detailed PDFs, eBooks, and continuously updated learning resources.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👨‍🏫</div>
+                <h3>Expert Instructors</h3>
+                <p>Learn from certified professionals with years of real-world cybersecurity experience.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔓</div>
+                <h3>Progressive Learning</h3>
+                <p>Unlock modules as you progress, ensuring solid foundation building at every step.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎓</div>
+                <h3>Career Support</h3>
+                <p>Receive certification upon completion and guidance for launching your cybersecurity career.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Who Is This For -->
+    <section>
+        <div class="target-audience">
+            <div class="section-header">
+                <h2>Who Is This For?</h2>
+                <p>Our courses are designed for motivated individuals serious about cybersecurity</p>
+            </div>
+            <div class="audience-grid">
+                <div class="audience-card">
+                    <div class="audience-icon">🎓</div>
+                    <h3>Students</h3>
+                    <p>IT students looking to specialize in cybersecurity and ethical hacking</p>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">💼</div>
+                    <h3>IT Professionals</h3>
+                    <p>System administrators and developers wanting to transition into security roles</p>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🔄</div>
+                    <h3>Career Changers</h3>
+                    <p>Professionals from other fields seeking a rewarding career in cybersecurity</p>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🚀</div>
+                    <h3>Beginners</h3>
+                    <p>Anyone with basic computer knowledge passionate about learning ethical hacking</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Outcomes -->
+    <section>
+        <div class="outcomes">
+            <div class="section-header">
+                <h2>What You'll Achieve</h2>
+                <p>Comprehensive skills and certifications to launch your cybersecurity career</p>
+            </div>
+            <div class="outcomes-grid">
+                <div class="outcome-item">
+                    <div class="outcome-icon">✅</div>
+                    <div class="outcome-content">
+                        <h3>Master Penetration Testing</h3>
+                        <p>Conduct comprehensive security assessments and vulnerability analyses on real-world systems</p>
+                    </div>
+                </div>
+                <div class="outcome-item">
+                    <div class="outcome-icon">✅</div>
+                    <div class="outcome-content">
+                        <h3>Industry Certification</h3>
+                        <p>Receive VAPTIC certification recognized by employers in the cybersecurity industry</p>
+                    </div>
+                </div>
+                <div class="outcome-item">
+                    <div class="outcome-icon">✅</div>
+                    <div class="outcome-content">
+                        <h3>Hands-On Experience</h3>
+                        <p>Build a portfolio of practical projects demonstrating your penetration testing skills</p>
+                    </div>
+                </div>
+                <div class="outcome-item">
+                    <div class="outcome-icon">✅</div>
+                    <div class="outcome-content">
+                        <h3>Tool Proficiency</h3>
+                        <p>Gain expertise in Metasploit, Burp Suite, Nmap, Wireshark, and 20+ security tools</p>
+                    </div>
+                </div>
+                <div class="outcome-item">
+                    <div class="outcome-icon">✅</div>
+                    <div class="outcome-content">
+                        <h3>Career Readiness</h3>
+                        <p>Prepare for roles like Penetration Tester, Security Analyst, or Ethical Hacker</p>
+                    </div>
+                </div>
+                <div class="outcome-item">
+                    <div class="outcome-icon">✅</div>
+                    <div class="outcome-content">
+                        <h3>Ongoing Support</h3>
+                        <p>Join our alumni network with lifetime access to updated course materials</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses -->
+    <section id="courses">
+        <div class="section-header">
+            <h2>Our Courses</h2>
+            <p>Choose your path to becoming a cybersecurity expert</p>
+        </div>
+        <div class="courses-grid">
+            <!-- Foundation Course -->
+            <div class="course-card">
+                <div class="course-header">
+                    <span class="course-badge">For Beginners</span>
+                    <h3>Foundation VAPTIC</h3>
+                    <p style="color: var(--text-secondary);">Build a strong foundation in ethical hacking and penetration testing</p>
+                </div>
+                <div class="course-body">
+                    <ul class="course-features">
+                        <li>20 comprehensive modules</li>
+                        <li>8 weeks intensive training</li>
+                        <li>Hands-on lab exercises</li>
+                        <li>Video tutorials & PDFs</li>
+                        <li>Live instructor support</li>
+                        <li>VAPTIC certification</li>
+                    </ul>
+                    <a href="signup.html" class="btn btn-primary" style="width: 100%; text-align: center; display: block; margin-top: 1rem;">Enroll Now</a>
+                </div>
+            </div>
+
+            <!-- Advanced Course -->
+            <div class="course-card">
+                <div class="course-header">
+                    <span class="course-badge" style="background: var(--secondary-color);">For Professionals</span>
+                    <h3>Advanced VAPTIC</h3>
+                    <p style="color: var(--text-secondary);">Master advanced techniques and real-world attack scenarios</p>
+                </div>
+                <div class="course-body">
+                    <ul class="course-features">
+                        <li>20 advanced modules</li>
+                        <li>8 weeks expert training</li>
+                        <li>Complex lab scenarios</li>
+                        <li>Advanced exploitation techniques</li>
+                        <li>Red team operations</li>
+                        <li>Advanced VAPTIC certification</li>
+                    </ul>
+                    <a href="signup.html" class="btn btn-primary" style="width: 100%; text-align: center; display: block; margin-top: 1rem;">Enroll Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Syllabus -->
+    <section id="syllabus">
+        <div class="syllabus">
+            <div class="syllabus-header">
+                <h3>Complete Course Syllabus</h3>
+                <p style="color: var(--text-secondary);">Detailed breakdown of all modules in both courses</p>
+            </div>
+
+            <div class="syllabus-tabs">
+                <button class="tab-btn active" onclick="showSyllabus('foundation')">Foundation Course</button>
+                <button class="tab-btn" onclick="showSyllabus('advanced')">Advanced Course</button>
+            </div>
+
+            <!-- Foundation Syllabus -->
+            <div id="foundation-syllabus" class="syllabus-content active">
+                <div class="module-card">
+                    <div class="module-number">MODULE 1</div>
+                    <h4>Introduction to Networking</h4>
+                    <p>TCP/IP, OSI model, network protocols, and basic network architecture</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 2</div>
+                    <h4>Linux Security Basics</h4>
+                    <p>Linux commands, file permissions, user management, and basic security hardening</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 3</div>
+                    <h4>Web Application Security</h4>
+                    <p>HTTP/HTTPS, web application architecture, common vulnerabilities, OWASP Top 10</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 4</div>
+                    <h4>Network Scanning & Reconnaissance</h4>
+                    <p>Nmap, network discovery, port scanning, and information gathering techniques</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 5</div>
+                    <h4>Vulnerability Assessment</h4>
+                    <p>Vulnerability scanning tools, OpenVAS, Nessus, risk assessment methodologies</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 6</div>
+                    <h4>Exploitation Basics</h4>
+                    <p>Understanding exploits, buffer overflows, shellcode, and basic exploitation</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 7</div>
+                    <h4>Metasploit Framework</h4>
+                    <p>Metasploit basics, modules, payloads, exploit development, and automation</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 8</div>
+                    <h4>SQL Injection</h4>
+                    <p>SQL injection types, manual and automated exploitation, SQLMap, prevention</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 9</div>
+                    <h4>Cross-Site Scripting (XSS)</h4>
+                    <p>Reflected, stored, and DOM-based XSS, exploitation, and mitigation strategies</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 10</div>
+                    <h4>Password Cracking</h4>
+                    <p>Hash algorithms, John the Ripper, Hashcat, rainbow tables, brute force</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 11</div>
+                    <h4>Wireless Security</h4>
+                    <p>WiFi protocols, WPA/WPA2 cracking, Aircrack-ng, wireless attack vectors</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 12</div>
+                    <h4>Social Engineering</h4>
+                    <p>Phishing, pretexting, baiting, social engineering toolkit, human factor</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 13</div>
+                    <h4>Privilege Escalation</h4>
+                    <p>Windows and Linux privilege escalation techniques, kernel exploits</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 14</div>
+                    <h4>Post-Exploitation</h4>
+                    <p>Maintaining access, lateral movement, data exfiltration, covering tracks</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 15</div>
+                    <h4>Report Writing</h4>
+                    <p>Professional penetration testing reports, documentation, recommendations</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 16</div>
+                    <h4>Burp Suite Deep Dive</h4>
+                    <p>Web proxy, scanner, intruder, repeater, advanced Burp Suite features</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 17</div>
+                    <h4>OWASP Top 10 in Depth</h4>
+                    <p>Comprehensive coverage of OWASP Top 10 vulnerabilities with labs</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 18</div>
+                    <h4>API Security Testing</h4>
+                    <p>REST/SOAP APIs, authentication, authorization, API vulnerability testing</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 19</div>
+                    <h4>Mobile Application Testing</h4>
+                    <p>Android/iOS security, mobile app vulnerabilities, testing methodologies</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 20</div>
+                    <h4>Capstone Project</h4>
+                    <p>Full penetration test on a vulnerable environment, comprehensive report</p>
+                </div>
+            </div>
+
+            <!-- Advanced Syllabus -->
+            <div id="advanced-syllabus" class="syllabus-content">
+                <div class="module-card">
+                    <div class="module-number">MODULE 1</div>
+                    <h4>Advanced Network Attacks</h4>
+                    <p>VLAN hopping, ARP poisoning, MITM attacks, advanced network exploitation</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 2</div>
+                    <h4>Active Directory Attacks</h4>
+                    <p>Kerberos attacks, Golden/Silver tickets, DCSync, domain exploitation</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 3</div>
+                    <h4>Advanced Web Exploitation</h4>
+                    <p>XXE, SSRF, deserialization, advanced injection techniques, template injection</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 4</div>
+                    <h4>Binary Exploitation</h4>
+                    <p>Buffer overflows, ROP chains, heap exploitation, exploit development</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 5</div>
+                    <h4>Exploit Development</h4>
+                    <p>Writing custom exploits, shellcoding, fuzzing, vulnerability research</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 6</div>
+                    <h4>Red Team Operations</h4>
+                    <p>OPSEC, C2 frameworks, Cobalt Strike, lateral movement, persistence</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 7</div>
+                    <h4>Cloud Security Testing</h4>
+                    <p>AWS, Azure, GCP security, cloud misconfigurations, container security</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 8</div>
+                    <h4>Advanced Wireless Attacks</h4>
+                    <p>WPA3 attacks, enterprise WiFi, Bluetooth hacking, RF exploitation</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 9</div>
+                    <h4>Malware Analysis</h4>
+                    <p>Static and dynamic analysis, reverse engineering, malware detection</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 10</div>
+                    <h4>Reverse Engineering</h4>
+                    <p>IDA Pro, Ghidra, assembly language, binary analysis, crackmes</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 11</div>
+                    <h4>Advanced Privilege Escalation</h4>
+                    <p>Advanced Windows/Linux escalation, kernel exploits, DLL hijacking</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 12</div>
+                    <h4>Evasion Techniques</h4>
+                    <p>AV bypass, EDR evasion, obfuscation, sandbox detection, anti-forensics</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 13</div>
+                    <h4>Advanced Social Engineering</h4>
+                    <p>Physical security, USB attacks, rogue devices, advanced phishing campaigns</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 14</div>
+                    <h4>IoT Security</h4>
+                    <p>IoT protocols, firmware analysis, hardware hacking, embedded systems</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 15</div>
+                    <h4>Advanced API Exploitation</h4>
+                    <p>GraphQL, gRPC, WebSocket attacks, API rate limiting bypass</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 16</div>
+                    <h4>Blockchain Security</h4>
+                    <p>Smart contract auditing, cryptocurrency attacks, DeFi exploitation</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 17</div>
+                    <h4>Threat Intelligence</h4>
+                    <p>OSINT, threat hunting, IOC analysis, threat actor TTPs, MITRE ATT&CK</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 18</div>
+                    <h4>Purple Team Operations</h4>
+                    <p>Defensive measures, blue team collaboration, detection engineering</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 19</div>
+                    <h4>Compliance & Frameworks</h4>
+                    <p>PCI-DSS, HIPAA, ISO 27001, NIST, compliance testing methodologies</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-number">MODULE 20</div>
+                    <h4>Advanced Capstone Project</h4>
+                    <p>Complex enterprise penetration test, red team engagement, full report</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section>
+        <div class="cta">
+            <h2>Ready to Start Your Cybersecurity Journey?</h2>
+            <p>Join the next batch and become a certified penetration tester</p>
+            <p style="font-size: 1rem; margin-bottom: 2rem;">Limited to 10 students per batch | Next batch starts soon</p>
+            <a href="signup.html" class="btn">Enroll Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="logo" style="margin-bottom: 1rem;">VAPTIC</div>
+            <p>Vulnerability Assessment Penetration Testing Integrated Courses</p>
+            <p style="margin-top: 2rem;">&copy; 2024 VAPTIC. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function showSyllabus(course) {
+            // Remove active class from all tabs and content
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.syllabus-content').forEach(content => content.classList.remove('active'));
+
+            // Add active class to selected tab and content
+            event.target.classList.add('active');
+            document.getElementById(course + '-syllabus').classList.add('active');
+        }
+    </script>
+</body>
+</html>
